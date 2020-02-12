@@ -1,0 +1,189 @@
+CREATE SEQUENCE public.tb_telefone_cd_telefone_seq;
+
+CREATE TABLE public.tb_telefone (
+                cd_telefone INTEGER NOT NULL DEFAULT nextval('public.tb_telefone_cd_telefone_seq'),
+                nr_telefone VARCHAR(20),
+                nr_celular VARCHAR(20) NOT NULL,
+                CONSTRAINT cd_telefone_pk PRIMARY KEY (cd_telefone)
+);
+
+
+ALTER SEQUENCE public.tb_telefone_cd_telefone_seq OWNED BY public.tb_telefone.cd_telefone;
+
+CREATE SEQUENCE public.tb_autenticacao_cd_autenticacao_seq;
+
+CREATE TABLE public.tb_autenticacao (
+                cd_autenticacao INTEGER NOT NULL DEFAULT nextval('public.tb_autenticacao_cd_autenticacao_seq'),
+                nm_login VARCHAR(20) NOT NULL,
+                de_senha VARCHAR(16) NOT NULL,
+                CONSTRAINT cd_autenticacao PRIMARY KEY (cd_autenticacao)
+);
+
+
+ALTER SEQUENCE public.tb_autenticacao_cd_autenticacao_seq OWNED BY public.tb_autenticacao.cd_autenticacao;
+
+CREATE SEQUENCE public.tb_produto_cd_produto_seq;
+
+CREATE TABLE public.tb_produto (
+                cd_produto INTEGER NOT NULL DEFAULT nextval('public.tb_produto_cd_produto_seq'),
+                nm_produto VARCHAR(100) NOT NULL,
+                de_produto VARCHAR(500) NOT NULL,
+                vl_produto REAL NOT NULL,
+                CONSTRAINT tb_produto_pk PRIMARY KEY (cd_produto)
+);
+
+
+ALTER SEQUENCE public.tb_produto_cd_produto_seq OWNED BY public.tb_produto.cd_produto;
+
+CREATE SEQUENCE public.tb_endereco_cd_endereco_seq;
+
+CREATE TABLE public.tb_endereco (
+                cd_endereco INTEGER NOT NULL DEFAULT nextval('public.tb_endereco_cd_endereco_seq'),
+                nr_cep VARCHAR(10) NOT NULL,
+                nr_residencial INTEGER NOT NULL,
+                nm_bairro VARCHAR(100) NOT NULL,
+                nm_cidade VARCHAR(50) NOT NULL,
+                nm_estado VARCHAR(50) NOT NULL,
+                de_rua VARCHAR(200) NOT NULL,
+                de_complemento VARCHAR(200) NOT NULL,
+                CONSTRAINT cd_endereco_pk PRIMARY KEY (cd_endereco)
+);
+
+
+ALTER SEQUENCE public.tb_endereco_cd_endereco_seq OWNED BY public.tb_endereco.cd_endereco;
+
+CREATE SEQUENCE public.tb_cliente_cd_cliente_seq;
+
+CREATE TABLE public.tb_cliente (
+                cd_cliente INTEGER NOT NULL DEFAULT nextval('public.tb_cliente_cd_cliente_seq'),
+                nm_cliente VARCHAR(100) NOT NULL,
+                nr_cpf VARCHAR(30) NOT NULL,
+                dt_nascimento DATE NOT NULL,
+                de_email VARCHAR(200) NOT NULL,
+                cd_endereco INTEGER NOT NULL,
+                cd_autenticacao INTEGER NOT NULL,
+                cd_telefone INTEGER NOT NULL,
+                CONSTRAINT cd_cliente_pk PRIMARY KEY (cd_cliente)
+);
+
+
+ALTER SEQUENCE public.tb_cliente_cd_cliente_seq OWNED BY public.tb_cliente.cd_cliente;
+
+CREATE SEQUENCE public.tb_pedido_cd_pedido_seq;
+
+CREATE TABLE public.tb_pedido (
+                cd_pedido INTEGER NOT NULL DEFAULT nextval('public.tb_pedido_cd_pedido_seq'),
+                cd_cliente INTEGER NOT NULL,
+                nr_qtd INTEGER NOT NULL,
+                vl_total REAL NOT NULL,
+                CONSTRAINT cd_pedido_pk PRIMARY KEY (cd_pedido)
+);
+
+
+ALTER SEQUENCE public.tb_pedido_cd_pedido_seq OWNED BY public.tb_pedido.cd_pedido;
+
+CREATE SEQUENCE public.tb_forma_de_entrega_cd_forma_entrega_seq;
+
+CREATE TABLE public.tb_forma_de_entrega (
+                cd_forma_entrega INTEGER NOT NULL DEFAULT nextval('public.tb_forma_de_entrega_cd_forma_entrega_seq'),
+                cd_pedido INTEGER NOT NULL,
+                de_forma_entrega VARCHAR(100) NOT NULL,
+                CONSTRAINT cd_forma_de_entrega_pk PRIMARY KEY (cd_forma_entrega)
+);
+
+
+ALTER SEQUENCE public.tb_forma_de_entrega_cd_forma_entrega_seq OWNED BY public.tb_forma_de_entrega.cd_forma_entrega;
+
+CREATE SEQUENCE public.tb_forma_de_pagamento_cd_forma_de_pagamento_seq;
+
+CREATE TABLE public.tb_forma_de_pagamento (
+                cd_forma_de_pagamento INTEGER NOT NULL DEFAULT nextval('public.tb_forma_de_pagamento_cd_forma_de_pagamento_seq'),
+                nm_forma_de_pagamento VARCHAR(100) NOT NULL,
+                cd_pedido INTEGER NOT NULL,
+                CONSTRAINT cd_forma_de_pagamento_pk PRIMARY KEY (cd_forma_de_pagamento)
+);
+
+
+ALTER SEQUENCE public.tb_forma_de_pagamento_cd_forma_de_pagamento_seq OWNED BY public.tb_forma_de_pagamento.cd_forma_de_pagamento;
+
+ALTER TABLE public.tb_cliente ADD CONSTRAINT tb_telefone_tb_cliente_fk
+FOREIGN KEY (cd_telefone)
+REFERENCES public.tb_telefone (cd_telefone)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_cliente ADD CONSTRAINT tb_autenticacao_tb_cliente_fk
+FOREIGN KEY (cd_autenticacao)
+REFERENCES public.tb_autenticacao (cd_autenticacao)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_pedido ADD CONSTRAINT tb_produto_tb_pedido_fk
+FOREIGN KEY (cd_produto)
+REFERENCES public.tb_produto (cd_produto)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_cliente ADD CONSTRAINT tb_endereco_tb_cliente_fk
+FOREIGN KEY (cd_endereco)
+REFERENCES public.tb_endereco (cd_endereco)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_pedido ADD CONSTRAINT tb_cliente_tb_pedido_fk
+FOREIGN KEY (cd_cliente)
+REFERENCES public.tb_cliente (cd_cliente)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_forma_de_pagamento ADD CONSTRAINT tb_pedido_tb_forma_de_pagamento_fk
+FOREIGN KEY (cd_pedido)
+REFERENCES public.tb_pedido (cd_pedido)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.tb_forma_de_entrega ADD CONSTRAINT tb_pedido_tb_forma_de_entrega_fk
+FOREIGN KEY (cd_pedido)
+REFERENCES public.tb_pedido (cd_pedido)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+
+/* INSERIR OS DADOS NA TABELA PRODUTO. */
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Burguer', 'Pão, Carne, Queijo, Presunto', '8.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Salada', 'Pão, Carne, Queijo, Presunto, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '10.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Galinha', 'Pão, Frago, Queijo, Presunto, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '11.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Bacon', 'Pão, Carne, Queijo, Presunto, Bacon, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '10.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Coração', 'Pão, Carne, Queijo, Presunto, Coração, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '12.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Egg', 'Pão, Carne, Queijo, Presunto, Ovo, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha ', '8.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Misto Quente', 'Pão, Queijo, Presunto', '6.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Calabresa', 'Pão, Carne, Queijo, Presunto, Calabresa, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '12.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('X-Casa', 'Pão, Carne, Queijo, Presunto, Calabresa, Bacon, Coração, Ovo, Frango, Alface, Tomate, Pepino, Milho, Ervilha, Batata Palha', '15.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Água', 'Água Mineral', '1.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Água Com Gás', 'Água Mineral Com Gás', '2.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Coca-Cola', 'Coca-Cola 350ml', '3.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Coca-Cola', 'Coca-Cola 600ml', '5.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Coca-Cola', 'Coca-Cola 1 Litro', '6.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Coca-Cola', 'Coca-Cola 2 Litros', '8.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Fanta', 'Fanta 350ml', '2.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Fanta', 'Fanta 600ml', '5.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Fanta', 'Fanta 2 Litros', '7.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Sprite', 'Sprite 350ml', '2.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Sprite', 'Sprinte 2 Litros', '6.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Pepsi', 'Pepsi 350ml', '2.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Pepsi', 'Pepsi 2 Litros', '5.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Guaraná', 'Guarana 350ml', '2.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Guaraná', 'Guarana 2 Litros', '5.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Budweiser', 'BudWeiser 600ml', '6.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Devassa', 'Devassa 600ml', '5.50');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Sub-Zero', 'Sub-Zero 600ml', '4.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Brahma', 'Brahma 600ml', '5.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Itaipava', 'Itaipava 600ml', '5.00');
+INSERT INTO tb_produto(nm_produto, de_produto, vl_produto) VALUES ('Skol', 'Skol 600ml', '4.00');
